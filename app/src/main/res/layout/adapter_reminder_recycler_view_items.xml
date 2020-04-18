@@ -1,4 +1,5 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="86dp"
@@ -8,60 +9,73 @@
         android:id="@+id/reminder_active"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/reminder_active_off" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/reminder_active_off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reminder_title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/reminder_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:layout_toLeftOf="@+id/reminder_thumbnail"
-        android:layout_toRightOf="@id/reminder_active"
-        android:orientation="vertical">
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/abc_primary_text_material_dark"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@id/reminder_date_time"
+        app:layout_constraintEnd_toStartOf="@id/reminder_thumbnail"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/reminder_active"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Title" />
 
-        <TextView
-            android:id="@+id/reminder_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="@color/abc_primary_text_material_dark"
-            android:textSize="16dp"
-            tools:text="Title" />
+    <TextView
+        android:id="@+id/reminder_date_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textColor="@color/abc_secondary_text_material_dark"
+        android:textSize="13dp"
+        app:layout_constraintBottom_toTopOf="@id/recycle_repeat_info"
+        app:layout_constraintEnd_toEndOf="@id/reminder_title"
+        app:layout_constraintStart_toStartOf="@id/reminder_title"
+        app:layout_constraintTop_toBottomOf="@id/reminder_title"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Date and Time" />
 
-        <TextView
-            android:id="@+id/reminder_date_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:singleLine="true"
-            android:textColor="@color/abc_secondary_text_material_dark"
-            android:textSize="13dp"
-            tools:text="Date and Time" />
-
-        <TextView
-            android:id="@+id/recycle_repeat_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:singleLine="true"
-            android:textColor="@color/abc_secondary_text_material_dark"
-            android:textSize="13dp"
-            tools:text="Repeat No and Type" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/recycle_repeat_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textColor="@color/abc_secondary_text_material_dark"
+        android:textSize="13dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/reminder_date_time"
+        app:layout_constraintStart_toStartOf="@id/reminder_date_time"
+        app:layout_constraintTop_toBottomOf="@id/reminder_date_time"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Repeat No and Type" />
 
     <ImageView
         android:id="@+id/reminder_thumbnail"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/reminder_title"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
