@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Reminder</string>
+    <string name="action_add_reminder">Add</string>
+    <string name="action_save_reminder">Save</string>
+    <string name="action_update_reminder">Update</string>
+    <string name="action_delete_reminder">Delete</string>
+    <string name="action_about_reminder">About</string>
+
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="repeat">Repeat</string>
+    <string name="repeat_off">Off</string>
+    <string name="repeat_no">Repetition Interval </string>
+    <string name="repeat_type">Type of Repetitions</string>
+</resources>

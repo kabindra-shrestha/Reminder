@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_delete_reminder"
+        android:icon="@drawable/action_delete_reminder"
+        android:title="@string/action_delete_reminder"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_update_reminder"
+        android:icon="@drawable/action_update_reminder"
+        android:title="@string/action_update_reminder"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_save_reminder"
+        android:icon="@drawable/action_save_reminder"
+        android:title="@string/action_save_reminder"
+        app:showAsAction="ifRoom" />
+
+</menu>
