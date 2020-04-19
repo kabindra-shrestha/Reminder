@@ -36,7 +36,7 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
     private var mTime: String? = null
     private var mDate: String? = null
     private var mRepeat: Boolean? = null
-    private var mRepeatNo: String? = null
+    private var mRepeatInterval: String? = null
     private var mRepeatType: String? = null
     private var mActive: Boolean? = null
 
@@ -76,7 +76,7 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
             mTime = "$mHour:$mMinute"
             mActive = true
             mRepeat = true
-            mRepeatNo = 1.toString()
+            mRepeatInterval = 1.toString()
             mRepeatType = "Hour"
         } else {
             title = "Edit Reminder"
@@ -89,7 +89,7 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
             mTime = reminder?.reminderTime
             mActive = reminder?.reminderEnable
             mRepeat = reminder?.reminderRepeat
-            mRepeatNo = reminder?.reminderRepeatTime
+            mRepeatInterval = reminder?.reminderRepeatTime
             mRepeatType = reminder?.reminderRepeatType
         }
 
@@ -113,8 +113,8 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
         reminder_date_set!!.text = mDate
         reminder_time_set!!.text = mTime
         reminder_repeat_switch!!.isChecked = mRepeat!!
-        reminder_repeat_set!!.text = "Every $mRepeatNo $mRepeatType(s)"
-        reminder_repeat_interval_set!!.text = mRepeatNo
+        reminder_repeat_set!!.text = "Every $mRepeatInterval $mRepeatType(s)"
+        reminder_repeat_interval_set!!.text = mRepeatInterval
         reminder_repeat_type_set!!.text = mRepeatType
     }
 
@@ -197,7 +197,7 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
 
         // Creating Reminder
         val ID: Int =
-            rb.addReminder(Reminder(mTitle, mDate, mTime, mRepeat, mRepeatNo, mRepeatType, mActive))
+            rb.addReminder(Reminder(mTitle, mDate, mTime, mRepeat, mRepeatInterval, mRepeatType, mActive))
 
         // Set up calender for creating the notification
         mCalendar.set(Calendar.MONTH, --mMonth)
@@ -209,15 +209,15 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
 
         // Check repeat type
         if (mRepeatType == "Minute") {
-            mRepeatTime = mRepeatNo.toInt() * ReminderActivity.milMinute
+            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milMinute
         } else if (mRepeatType == "Hour") {
-            mRepeatTime = mRepeatNo.toInt() * ReminderActivity.milHour
+            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milHour
         } else if (mRepeatType == "Day") {
-            mRepeatTime = mRepeatNo.toInt() * ReminderActivity.milDay
+            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milDay
         } else if (mRepeatType == "Week") {
-            mRepeatTime = mRepeatNo.toInt() * ReminderActivity.milWeek
+            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milWeek
         } else if (mRepeatType == "Month") {
-            mRepeatTime = mRepeatNo.toInt() * ReminderActivity.milMonth
+            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milMonth
         }
 
         // Create a new notification
@@ -307,14 +307,14 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
         val on = (view as Switch).isChecked
         if (on) {
             mRepeat = true
-            reminder_repeat_set?.text = "Every $mRepeatNo $mRepeatType(s)"
+            reminder_repeat_set?.text = "Every $mRepeatInterval $mRepeatType(s)"
         } else {
             mRepeat = false
             reminder_repeat_set?.setText(R.string.repeat_off)
         }
     }
 
-    fun setRepeatNo(v: View?) {
+    fun setRepeatInterval(v: View?) {
         val alert = AlertDialog.Builder(this)
         alert.setTitle("Enter Number")
 
@@ -326,17 +326,17 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
             "Ok"
         ) { dialog, whichButton ->
             if (input.text.toString().length == 0) {
-                mRepeatNo = Integer.toString(1)
-                // mRepeatNoText?.text = mRepeatNo
-                reminder_repeat_interval_set?.text = mRepeatNo
-                // mRepeatText?.text = "Every $mRepeatNo $mRepeatType(s)"
-                reminder_repeat_set?.text = "Every $mRepeatNo $mRepeatType(s)"
+                mRepeatInterval = Integer.toString(1)
+                // mRepeatIntervalText?.text = mRepeatInterval
+                reminder_repeat_interval_set?.text = mRepeatInterval
+                // mRepeatText?.text = "Every $mRepeatInterval $mRepeatType(s)"
+                reminder_repeat_set?.text = "Every $mRepeatInterval $mRepeatType(s)"
             } else {
-                mRepeatNo = input.text.toString().trim { it <= ' ' }
-                // mRepeatNoText?.text = mRepeatNo
-                reminder_repeat_interval_set?.text = mRepeatNo
-                // mRepeatText?.text = "Every $mRepeatNo $mRepeatType(s)"
-                reminder_repeat_set?.text = "Every $mRepeatNo $mRepeatType(s)"
+                mRepeatInterval = input.text.toString().trim { it <= ' ' }
+                // mRepeatIntervalText?.text = mRepeatInterval
+                reminder_repeat_interval_set?.text = mRepeatInterval
+                // mRepeatText?.text = "Every $mRepeatInterval $mRepeatType(s)"
+                reminder_repeat_set?.text = "Every $mRepeatInterval $mRepeatType(s)"
             }
         }
         alert.setNegativeButton(
@@ -361,7 +361,7 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
         builder.setItems(items) { dialog, item ->
             mRepeatType = items[item]
             reminder_repeat_type_set?.text = mRepeatType
-            reminder_repeat_set?.text = "Every $mRepeatNo $mRepeatType(s)"
+            reminder_repeat_set?.text = "Every $mRepeatInterval $mRepeatType(s)"
         }
         val alert = builder.create()
         alert.show()

@@ -28,7 +28,7 @@
         android:textColor="@color/abc_primary_text_material_dark"
         android:textSize="16dp"
         app:layout_constraintBottom_toTopOf="@id/reminder_date_time"
-        app:layout_constraintEnd_toStartOf="@id/reminder_thumbnail"
+        app:layout_constraintEnd_toStartOf="@id/reminder_repeat_switch"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@id/reminder_active"
         app:layout_constraintTop_toTopOf="parent"
@@ -65,12 +65,15 @@
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Repeat No and Type" />
 
-    <ImageView
-        android:id="@+id/reminder_thumbnail"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+    <Switch
+        android:id="@+id/reminder_repeat_switch"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:checked="true"
+        android:textOff="Off"
+        android:textOn="On"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

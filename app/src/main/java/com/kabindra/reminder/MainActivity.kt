@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kabindra.reminder.adapter.ReminderRecyclerViewAdapter
+import com.kabindra.reminder.entity.Reminder
 import com.kabindra.reminder.room.DatabaseService
 import com.kabindra.reminder.utils.Utils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -83,12 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         val success = databaseService.getAllReminders()
 
-        Utils.showSnackbar(
-            findViewById(android.R.id.content),
-            "Reminders: onResume: " + success!!.size
-        )
-
-        if (success.isEmpty()) {
+        if (success!!.isEmpty()) {
             showList(main_list, false)
             showError(main_error, true)
         } else {
@@ -104,6 +100,17 @@ class MainActivity : AppCompatActivity() {
                 ReminderRecyclerViewAdapter.OnItemClickListener {
                 override fun onClick(view: View, position: Int) {
                     ReminderActivity.start(this@MainActivity, success[position].reminderId)
+                }
+
+                override fun onSwitchClick(view: View, reminder: Reminder) {
+                    val success = databaseService.updateReminder(reminder)
+
+                    if (success == 1) {
+                        Utils.showSnackbar(
+                            findViewById(android.R.id.content),
+                            "Reminder updated successfully."
+                        )
+                    }
                 }
             })
         }

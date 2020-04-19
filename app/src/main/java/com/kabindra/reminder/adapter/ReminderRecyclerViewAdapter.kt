@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.amulyakhare.textdrawable.TextDrawable
-import com.amulyakhare.textdrawable.util.ColorGenerator
 import com.kabindra.reminder.R
 import com.kabindra.reminder.entity.Reminder
 import kotlinx.android.synthetic.main.adapter_reminder_recycler_view_items.view.*
@@ -14,7 +12,7 @@ import kotlinx.android.synthetic.main.adapter_reminder_recycler_view_items.view.
 class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Reminder>?) :
     RecyclerView.Adapter<ReminderRecyclerViewAdapter.ViewHolder>() {
 
-    lateinit var listener: OnItemClickListener
+    private lateinit var listener: OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -32,16 +30,6 @@ class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Rem
             letter = item.reminderTitle.substring(0, 1)
         }
 
-
-        val mColorGenerator = ColorGenerator.DEFAULT
-        var mDrawableBuilder: TextDrawable? = null
-
-        val color: Int = mColorGenerator.getRandomColor()
-
-        // Create a circular icon consisting of  a random background colour and first letter of title
-        mDrawableBuilder = TextDrawable.builder().buildRound(letter, color)
-        viewHolder.reminder_thumbnail.setImageDrawable(mDrawableBuilder)
-
         viewHolder.reminder_date_time?.text = item.reminderDate + " " + item.reminderTime
 
         if (item.reminderRepeat!!) {
@@ -57,7 +45,32 @@ class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Rem
             viewHolder.reminder_active.setImageResource(R.drawable.reminder_active_off)
         }
 
+        viewHolder.reminder_repeat_switch.isChecked = item.reminderEnable
+
         viewHolder.itemView.setOnClickListener { listener.onClick(it, position) }
+
+        viewHolder.reminder_repeat_switch.setOnClickListener {
+            val isSwitch = viewHolder.reminder_repeat_switch.isChecked
+
+            if (isSwitch) {
+                viewHolder.reminder_active.setImageResource(R.drawable.reminder_active_on)
+            } else {
+                viewHolder.reminder_active.setImageResource(R.drawable.reminder_active_off)
+            }
+
+            listener.onSwitchClick(
+                it, Reminder(
+                    item.reminderId,
+                    item.reminderTitle,
+                    item.reminderDate,
+                    item.reminderTime,
+                    item.reminderRepeat,
+                    item.reminderRepeatTime,
+                    item.reminderRepeatType,
+                    isSwitch
+                )
+            )
+        }
     }
 
     override fun getItemCount(): Int {
@@ -65,7 +78,7 @@ class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Rem
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val reminder_thumbnail = view.reminder_thumbnail
+        val reminder_repeat_switch = view.reminder_repeat_switch
         val reminder_title = view.reminder_title
         val reminder_date_time = view.reminder_date_time
         val recycle_repeat_info = view.recycle_repeat_info
@@ -74,9 +87,14 @@ class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Rem
 
     interface OnItemClickListener {
         fun onClick(view: View, position: Int)
+        fun onSwitchClick(view: View, reminder: Reminder)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
+    }
+
+    fun setOnItemSwitchClickListener(listener: OnItemClickListener) {
         this.listener = listener
     }
 
