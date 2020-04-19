@@ -13,6 +13,7 @@ import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import com.kabindra.reminder.entity.Reminder
 import com.kabindra.reminder.room.DatabaseService
+import com.kabindra.reminder.service.AlarmReceiver
 import com.kabindra.reminder.utils.Utils
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout
@@ -28,9 +29,9 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
 
     private var mYear = 0
     private var mMonth: Int = 0
+    private var mDay: Int = 0
     private var mHour: Int = 0
     private var mMinute: Int = 0
-    private var mDay: Int = 0
 
     private var mTitle: String? = null
     private var mTime: String? = null
@@ -41,7 +42,14 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
     private var mActive: Boolean? = null
 
     companion object {
-        private var REMINDER_ID: String = "reminderId"
+        var REMINDER_ID: String = "reminderId"
+
+        // Constant values in milliseconds
+        private val milMinute = 60000L
+        private val milHour = 3600000L
+        private val milDay = 86400000L
+        private val milWeek = 604800000L
+        private val milMonth = 2592000000L
 
         fun start(context: Context, reminderId: Int?) {
             val intent = Intent(context, ReminderActivity::class.java)
@@ -65,11 +73,13 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
 
             // Initialize default values
             val mCalendar = Calendar.getInstance()
-            mHour = mCalendar.get(Calendar.HOUR_OF_DAY)
-            mMinute = mCalendar.get(Calendar.MINUTE)
             mYear = mCalendar.get(Calendar.YEAR)
             mMonth = mCalendar.get(Calendar.MONTH) + 1
             mDay = mCalendar.get(Calendar.DATE)
+            mHour = mCalendar.get(Calendar.HOUR_OF_DAY)
+            mMinute = mCalendar.get(Calendar.MINUTE)
+
+            println("DATETIME start: $mMonth - $mYear - $mDay - $mHour - $mMinute")
 
             mTitle = ""
             mDate = "$mDay/$mMonth/$mYear"
@@ -166,13 +176,13 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
         else {
             val reminder = databaseService.getLastReminder()
 
-            var reminderId = reminder?.reminderId ?: 0
+            var reminderID = reminder?.reminderId ?: 0
 
-            val totalCount = reminderId + 1
+            val reminderId = reminderID + 1
 
             val success = databaseService.insertReminder(
                 Reminder(
-                    totalCount,
+                    reminderId,
                     reminder_title_set.text.toString(),
                     reminder_date_set.text.toString(),
                     reminder_time_set.text.toString(),
@@ -183,8 +193,53 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
                 )
             )
 
+            // Set up calender for creating the notification
+            val mCalendar = Calendar.getInstance()
+            mCalendar.set(Calendar.MONTH, Utils.getMonth(reminder_date_set.text.toString()) - 1)
+            mCalendar.set(Calendar.YEAR, Utils.getYear(reminder_date_set.text.toString()))
+            mCalendar.set(Calendar.DAY_OF_MONTH, Utils.getDate(reminder_date_set.text.toString()))
+            mCalendar.set(Calendar.HOUR_OF_DAY, Utils.getHour(reminder_time_set.text.toString()))
+            mCalendar.set(Calendar.MINUTE, Utils.getMinute(reminder_time_set.text.toString()))
+            mCalendar.set(Calendar.SECOND, 0)
+
+            println(
+                "DATETIME save: " + Utils.getMonth(reminder_date_set.text.toString()) + " - " + Utils.getYear(
+                    reminder_date_set.text.toString()
+                ) + " - " + Utils.getDate(reminder_date_set.text.toString()) + " - " + Utils.getHour(
+                    reminder_time_set.text.toString()
+                ) + " - " + Utils.getMinute(reminder_time_set.text.toString())
+            )
+
+            // Check repeat type
+            var mRepeatTime: Long = 0
+            if (mRepeatType == "Minute") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milMinute
+            } else if (mRepeatType == "Hour") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milHour
+            } else if (mRepeatType == "Day") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milDay
+            } else if (mRepeatType == "Week") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milWeek
+            } else if (mRepeatType == "Month") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milMonth
+            }
+
+            // Create a new notification
+            if (mActive!!) {
+                if (mRepeat!!) {
+                    AlarmReceiver().setRepeatAlarm(
+                        applicationContext,
+                        mCalendar,
+                        reminderId,
+                        mRepeatTime
+                    )
+                } else {
+                    AlarmReceiver().setAlarm(applicationContext, mCalendar, reminderId)
+                }
+            }
+
             if (success == 1) {
-                Utils.showSnackbar(
+                Utils.showSnackBar(
                     findViewById(android.R.id.content),
                     "Reminder inserted successfully."
                 )
@@ -192,48 +247,6 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
 
             onBackPressed()
         }
-
-        /*val rb = ReminderDatabase(this)
-
-        // Creating Reminder
-        val ID: Int =
-            rb.addReminder(Reminder(mTitle, mDate, mTime, mRepeat, mRepeatInterval, mRepeatType, mActive))
-
-        // Set up calender for creating the notification
-        mCalendar.set(Calendar.MONTH, --mMonth)
-        mCalendar.set(Calendar.YEAR, mYear)
-        mCalendar.set(Calendar.DAY_OF_MONTH, mDay)
-        mCalendar.set(Calendar.HOUR_OF_DAY, mHour)
-        mCalendar.set(Calendar.MINUTE, mMinute)
-        mCalendar.set(Calendar.SECOND, 0)
-
-        // Check repeat type
-        if (mRepeatType == "Minute") {
-            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milMinute
-        } else if (mRepeatType == "Hour") {
-            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milHour
-        } else if (mRepeatType == "Day") {
-            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milDay
-        } else if (mRepeatType == "Week") {
-            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milWeek
-        } else if (mRepeatType == "Month") {
-            mRepeatTime = mRepeatInterval.toInt() * ReminderActivity.milMonth
-        }
-
-        // Create a new notification
-        if (mActive == "true") {
-            if (mRepeat == "true") {
-                AlarmReceiver().setRepeatAlarm(applicationContext, mCalendar, ID, mRepeatTime)
-            } else if (mRepeat == "false") {
-                AlarmReceiver().setAlarm(applicationContext, mCalendar, ID)
-            }
-        }
-
-        // Create toast to confirm new reminder
-        Toast.makeText(
-            applicationContext, "Saved",
-            Toast.LENGTH_SHORT
-        ).show()*/
     }
 
     private fun updateReminder() {
@@ -253,8 +266,56 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
                 )
             )
 
+            // Cancel existing notification of the reminder by using its ID
+            AlarmReceiver().cancelAlarm(applicationContext, reminderId)
+
+            // Set up calender for creating the notification
+            val mCalendar = Calendar.getInstance()
+            mCalendar.set(Calendar.MONTH, Utils.getMonth(reminder_date_set.text.toString()) - 1)
+            mCalendar.set(Calendar.YEAR, Utils.getYear(reminder_date_set.text.toString()))
+            mCalendar.set(Calendar.DAY_OF_MONTH, Utils.getDate(reminder_date_set.text.toString()))
+            mCalendar.set(Calendar.HOUR_OF_DAY, Utils.getHour(reminder_time_set.text.toString()))
+            mCalendar.set(Calendar.MINUTE, Utils.getMinute(reminder_time_set.text.toString()))
+            mCalendar.set(Calendar.SECOND, 0)
+
+            println(
+                "DATETIME update: " + Utils.getMonth(reminder_date_set.text.toString()) + " - " + Utils.getYear(
+                    reminder_date_set.text.toString()
+                ) + " - " + Utils.getDate(reminder_date_set.text.toString()) + " - " + Utils.getHour(
+                    reminder_time_set.text.toString()
+                ) + " - " + Utils.getMinute(reminder_time_set.text.toString())
+            )
+
+            // Check repeat type
+            var mRepeatTime: Long = 0
+            if (mRepeatType == "Minute") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milMinute
+            } else if (mRepeatType == "Hour") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milHour
+            } else if (mRepeatType == "Day") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milDay
+            } else if (mRepeatType == "Week") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milWeek
+            } else if (mRepeatType == "Month") {
+                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milMonth
+            }
+
+            // Create a new notification
+            if (mActive!!) {
+                if (mRepeat!!) {
+                    AlarmReceiver().setRepeatAlarm(
+                        applicationContext,
+                        mCalendar,
+                        reminderId,
+                        mRepeatTime
+                    )
+                } else {
+                    AlarmReceiver().setAlarm(applicationContext, mCalendar, reminderId)
+                }
+            }
+
             if (success == 1) {
-                Utils.showSnackbar(
+                Utils.showSnackBar(
                     findViewById(android.R.id.content),
                     "Reminder updated successfully."
                 )
@@ -269,8 +330,11 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
 
         val success = databaseService.deleteReminder(reminder!!)
 
+        // Cancel existing notification of the reminder by using its ID
+        AlarmReceiver().cancelAlarm(applicationContext, reminderId)
+
         if (success == 1) {
-            Utils.showSnackbar(
+            Utils.showSnackBar(
                 findViewById(android.R.id.content),
                 "Reminder deleted successfully."
             )
@@ -370,9 +434,9 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
         var monthOfYearNew = monthOfYear
         monthOfYearNew++
-        mDay = dayOfMonth
-        mMonth = monthOfYearNew
         mYear = year
+        mMonth = monthOfYearNew
+        mDay = dayOfMonth
         mDate = "$dayOfMonth/$monthOfYearNew/$year"
 
         reminder_date_set.text = mDate
@@ -381,10 +445,10 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
     override fun onTimeSet(view: RadialPickerLayout?, hourOfDay: Int, minute: Int) {
         mHour = hourOfDay
         mMinute = minute
-        if (minute < 10) {
-            mTime = "$hourOfDay:0$minute"
+        mTime = if (minute < 10) {
+            "$hourOfDay:0$minute"
         } else {
-            mTime = "$hourOfDay:$minute"
+            "$hourOfDay:$minute"
         }
 
         reminder_time_set.text = mTime

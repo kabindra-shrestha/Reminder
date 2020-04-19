@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kabindra.reminder.adapter.ReminderRecyclerViewAdapter
 import com.kabindra.reminder.entity.Reminder
 import com.kabindra.reminder.room.DatabaseService
+import com.kabindra.reminder.service.AlarmReceiver
 import com.kabindra.reminder.utils.Utils
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +27,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     companion object {
+        // Constant values in milliseconds
+        private val milMinute = 60000L
+        private val milHour = 3600000L
+        private val milDay = 86400000L
+        private val milWeek = 604800000L
+        private val milMonth = 2592000000L
+
         fun start(context: Context) {
             val intent = Intent(context, MainActivity::class.java)
             intent.flags =
@@ -103,16 +112,68 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onSwitchClick(view: View, reminder: Reminder) {
-                    val success = databaseService.updateReminder(reminder)
-
-                    if (success == 1) {
-                        Utils.showSnackbar(
-                            findViewById(android.R.id.content),
-                            "Reminder updated successfully."
-                        )
-                    }
+                    updateReminder(reminder)
                 }
             })
+        }
+    }
+
+    private fun updateReminder(reminder: Reminder) {
+        val success = databaseService.updateReminder(reminder)
+
+        // Cancel existing notification of the reminder by using its ID
+        AlarmReceiver().cancelAlarm(applicationContext, reminder.reminderId)
+
+        // Set up calender for creating the notification
+        val mCalendar = Calendar.getInstance()
+        mCalendar.set(Calendar.MONTH, Utils.getMonth(reminder.reminderDate.toString()) - 1)
+        mCalendar.set(Calendar.YEAR, Utils.getYear(reminder.reminderDate.toString()))
+        mCalendar.set(Calendar.DAY_OF_MONTH, Utils.getDate(reminder.reminderDate.toString()))
+        mCalendar.set(Calendar.HOUR_OF_DAY, Utils.getHour(reminder.reminderTime.toString()))
+        mCalendar.set(Calendar.MINUTE, Utils.getMinute(reminder.reminderTime.toString()))
+        mCalendar.set(Calendar.SECOND, 0)
+
+        println(
+            "DATETIME update switch: " + Utils.getMonth(reminder.reminderDate.toString()) + " - " + Utils.getYear(
+                reminder.reminderDate.toString()
+            ) + " - " + Utils.getDate(reminder.reminderDate.toString()) + " - " + Utils.getHour(
+                reminder.reminderTime.toString()
+            ) + " - " + Utils.getMinute(reminder.reminderTime.toString())
+        )
+
+        // Check repeat type
+        var mRepeatTime: Long = 0
+        if (reminder.reminderRepeatType == "Minute") {
+            mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * milMinute
+        } else if (reminder.reminderRepeatType == "Hour") {
+            mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * milHour
+        } else if (reminder.reminderRepeatType == "Day") {
+            mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * milDay
+        } else if (reminder.reminderRepeatType == "Week") {
+            mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * milWeek
+        } else if (reminder.reminderRepeatType == "Month") {
+            mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * milMonth
+        }
+
+        // Create a new notification
+        if (reminder.reminderEnable!!) {
+            if (reminder.reminderRepeat!!) {
+                AlarmReceiver().setRepeatAlarm(
+                    applicationContext,
+                    mCalendar,
+                    reminder.reminderId,
+                    mRepeatTime
+                )
+            } else {
+                AlarmReceiver().setAlarm(applicationContext, mCalendar, reminder.reminderId)
+            }
+        }
+
+        if (success == 1) {
+            Utils.showSnackBar(
+                findViewById(android.R.id.content),
+                "Reminder updated successfully."
+            )
         }
     }
 
