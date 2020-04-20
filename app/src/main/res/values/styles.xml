@@ -17,4 +17,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="AppTheme.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:backgroundTint">@color/colorBlack</item>
+    </style>
+
 </resources>

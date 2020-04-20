@@ -13,4 +13,8 @@
     <string name="repeat_off">Off</string>
     <string name="repeat_no">Repetition Interval </string>
     <string name="repeat_type">Type of Repetitions</string>
+
+    <string name="channel_id">Reminder00</string>
+    <string name="channel_name">Reminder Notification</string>
+    <string name="channel_description">This is a reminder notification.</string>
 </resources>

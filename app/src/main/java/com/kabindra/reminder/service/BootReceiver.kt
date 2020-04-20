@@ -24,7 +24,6 @@ class BootReceiver : BroadcastReceiver() {
     private var mMinute: Int = 0
     private var mDay: Int = 0
     private var mReceivedID: Int = 0
-    private var mRepeatTime: Long = 0
 
     private var mAlarmReceiver: AlarmReceiver? = null
 
@@ -71,6 +70,7 @@ class BootReceiver : BroadcastReceiver() {
                     // mAlarmReceiver.cancelAlarm(context, mReceivedID);
 
                     // Check repeat type
+                    /*var mRepeatTime: Long = 0
                     if (mRepeatType == "Minute") {
                         mRepeatTime = mRepeatInterval!!.toInt() * milMinute
                     } else if (mRepeatType == "Hour") {
@@ -81,20 +81,20 @@ class BootReceiver : BroadcastReceiver() {
                         mRepeatTime = mRepeatInterval!!.toInt() * milWeek
                     } else if (mRepeatType == "Month") {
                         mRepeatTime = mRepeatInterval!!.toInt() * milMonth
-                    }
+                    }*/
 
                     // Create a new notification
                     if (mActive!!) {
-                        if (mRepeat!!) {
+                        /*if (mRepeat!!) {
                             mAlarmReceiver!!.setRepeatAlarm(
                                 context,
                                 mCalendar,
                                 mReceivedID,
                                 mRepeatTime
                             )
-                        } else {
-                            mAlarmReceiver!!.setAlarm(context, mCalendar, mReceivedID)
-                        }
+                        } else {*/
+                        mAlarmReceiver!!.setAlarm(context, mCalendar, mReceivedID)
+                        /*}*/
                     }
                 }
             }

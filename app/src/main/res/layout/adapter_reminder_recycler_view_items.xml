@@ -21,12 +21,13 @@
 
     <TextView
         android:id="@+id/reminder_title"
+        style="@style/AppTheme.TextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/abc_primary_text_material_dark"
-        android:textSize="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/reminder_date_time"
         app:layout_constraintEnd_toStartOf="@id/reminder_repeat_switch"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -37,12 +38,12 @@
 
     <TextView
         android:id="@+id/reminder_date_time"
+        style="@style/AppTheme.TextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textColor="@color/abc_secondary_text_material_dark"
-        android:textSize="13dp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@id/recycle_repeat_info"
         app:layout_constraintEnd_toEndOf="@id/reminder_title"
         app:layout_constraintStart_toStartOf="@id/reminder_title"
@@ -52,12 +53,12 @@
 
     <TextView
         android:id="@+id/recycle_repeat_info"
+        style="@style/AppTheme.TextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textColor="@color/abc_secondary_text_material_dark"
-        android:textSize="13dp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/reminder_date_time"
         app:layout_constraintStart_toStartOf="@id/reminder_date_time"

@@ -44,13 +44,6 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
     companion object {
         var REMINDER_ID: String = "reminderId"
 
-        // Constant values in milliseconds
-        private val milMinute = 60000L
-        private val milHour = 3600000L
-        private val milDay = 86400000L
-        private val milWeek = 604800000L
-        private val milMonth = 2592000000L
-
         fun start(context: Context, reminderId: Int?) {
             val intent = Intent(context, ReminderActivity::class.java)
             /*intent.flags =
@@ -97,7 +90,8 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
             mTitle = reminder?.reminderTitle
             mDate = reminder?.reminderDate
             mTime = reminder?.reminderTime
-            mActive = reminder?.reminderEnable
+            // mActive = reminder?.reminderEnable
+            mActive = true
             mRepeat = reminder?.reminderRepeat
             mRepeatInterval = reminder?.reminderRepeatTime
             mRepeatType = reminder?.reminderRepeatType
@@ -171,7 +165,7 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
     }
 
     private fun saveReminder() {
-        if (reminder_title_set.text.isEmpty())
+        if (reminder_title_set.text!!.isEmpty())
             reminder_title_set.error = "Reminder title cannot be empty."
         else {
             val reminder = databaseService.getLastReminder()
@@ -211,31 +205,36 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
             )
 
             // Check repeat type
-            var mRepeatTime: Long = 0
+            /*var mRepeatTime: Long = 0
             if (mRepeatType == "Minute") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milMinute
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milMinute
             } else if (mRepeatType == "Hour") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milHour
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milHour
             } else if (mRepeatType == "Day") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milDay
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milDay
             } else if (mRepeatType == "Week") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milWeek
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milWeek
             } else if (mRepeatType == "Month") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milMonth
-            }
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milMonth
+            }*/
 
             // Create a new notification
             if (mActive!!) {
-                if (mRepeat!!) {
+                /*if (mRepeat!!) {
                     AlarmReceiver().setRepeatAlarm(
                         applicationContext,
                         mCalendar,
                         reminderId,
                         mRepeatTime
                     )
-                } else {
-                    AlarmReceiver().setAlarm(applicationContext, mCalendar, reminderId)
-                }
+                } else {*/
+                AlarmReceiver().setAlarm(applicationContext, mCalendar, reminderId)
+                /*}*/
             }
 
             if (success == 1) {
@@ -250,7 +249,7 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
     }
 
     private fun updateReminder() {
-        if (reminder_title_set.text.isEmpty())
+        if (reminder_title_set.text!!.isEmpty())
             reminder_title_set.error = "Reminder title cannot be empty."
         else {
             val success = databaseService.updateReminder(
@@ -287,31 +286,36 @@ class ReminderActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener
             )
 
             // Check repeat type
-            var mRepeatTime: Long = 0
+            /*var mRepeatTime: Long = 0
             if (mRepeatType == "Minute") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milMinute
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milMinute
             } else if (mRepeatType == "Hour") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milHour
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milHour
             } else if (mRepeatType == "Day") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milDay
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milDay
             } else if (mRepeatType == "Week") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milWeek
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milWeek
             } else if (mRepeatType == "Month") {
-                mRepeatTime = reminder_repeat_interval_set.text.toString().toInt() * milMonth
-            }
+                mRepeatTime =
+                    reminder_repeat_interval_set.text.toString().toInt() * AlarmReceiver.milMonth
+            }*/
 
             // Create a new notification
             if (mActive!!) {
-                if (mRepeat!!) {
+                /*if (mRepeat!!) {
                     AlarmReceiver().setRepeatAlarm(
                         applicationContext,
                         mCalendar,
                         reminderId,
                         mRepeatTime
                     )
-                } else {
-                    AlarmReceiver().setAlarm(applicationContext, mCalendar, reminderId)
-                }
+                } else {*/
+                AlarmReceiver().setAlarm(applicationContext, mCalendar, reminderId)
+                /*}*/
             }
 
             if (success == 1) {

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorWhite"
     tools:context=".ReminderActivity">
 
     <ScrollView
@@ -47,13 +47,14 @@
 
                 <TextView
                     android:id="@+id/reminder_title_text"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@string/title"
-                    android:textColor="@color/abc_primary_text_material_dark"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/reminder_title_set"
                     app:layout_constraintEnd_toStartOf="@id/reminder_title_view"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -61,13 +62,13 @@
                     app:layout_constraintTop_toTopOf="@id/reminder_title"
                     app:layout_constraintVertical_chainStyle="packed" />
 
-                <EditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/reminder_title_set"
+                    style="@style/AppTheme.EditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:textColor="@color/abc_secondary_text_material_dark"
-                    android:textSize="13dp"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@id/reminder_title"
                     app:layout_constraintEnd_toEndOf="@id/reminder_title_text"
                     app:layout_constraintStart_toStartOf="@id/reminder_title_text"
@@ -118,13 +119,14 @@
 
                 <TextView
                     android:id="@+id/reminder_date_text"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@string/date"
-                    android:textColor="@color/abc_primary_text_material_dark"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/reminder_date_set"
                     app:layout_constraintEnd_toStartOf="@id/reminder_date_view"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -134,12 +136,12 @@
 
                 <TextView
                     android:id="@+id/reminder_date_set"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:textColor="@color/abc_secondary_text_material_dark"
-                    android:textSize="13dp"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@id/reminder_date"
                     app:layout_constraintEnd_toEndOf="@id/reminder_date_text"
                     app:layout_constraintStart_toStartOf="@id/reminder_date_text"
@@ -190,13 +192,14 @@
 
                 <TextView
                     android:id="@+id/reminder_time_text"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@string/date"
-                    android:textColor="@color/abc_primary_text_material_dark"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/reminder_time_set"
                     app:layout_constraintEnd_toStartOf="@id/reminder_time_view"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -206,12 +209,12 @@
 
                 <TextView
                     android:id="@+id/reminder_time_set"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:textColor="@color/abc_secondary_text_material_dark"
-                    android:textSize="13dp"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@id/reminder_time"
                     app:layout_constraintEnd_toEndOf="@id/reminder_time_text"
                     app:layout_constraintStart_toStartOf="@id/reminder_time_text"
@@ -261,13 +264,14 @@
 
                 <TextView
                     android:id="@+id/reminder_repeat_text"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@string/date"
-                    android:textColor="@color/abc_primary_text_material_dark"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/reminder_repeat_set"
                     app:layout_constraintEnd_toStartOf="@id/reminder_repeat_switch"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -277,12 +281,12 @@
 
                 <TextView
                     android:id="@+id/reminder_repeat_set"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:textColor="@color/abc_secondary_text_material_dark"
-                    android:textSize="13dp"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@id/reminder_repeat"
                     app:layout_constraintEnd_toEndOf="@id/reminder_repeat_text"
                     app:layout_constraintStart_toStartOf="@id/reminder_repeat_text"
@@ -337,13 +341,14 @@
 
                 <TextView
                     android:id="@+id/reminder_repeat_interval_text"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@string/date"
-                    android:textColor="@color/abc_primary_text_material_dark"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/reminder_repeat_interval_set"
                     app:layout_constraintEnd_toStartOf="@id/reminder_repeat_interval_view"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -353,12 +358,12 @@
 
                 <TextView
                     android:id="@+id/reminder_repeat_interval_set"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:textColor="@color/abc_secondary_text_material_dark"
-                    android:textSize="13dp"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@id/reminder_repeat_interval"
                     app:layout_constraintEnd_toEndOf="@id/reminder_repeat_interval_text"
                     app:layout_constraintStart_toStartOf="@id/reminder_repeat_interval_text"
@@ -409,13 +414,14 @@
 
                 <TextView
                     android:id="@+id/reminder_repeat_type_text"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@string/date"
-                    android:textColor="@color/abc_primary_text_material_dark"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/reminder_repeat_type_set"
                     app:layout_constraintEnd_toStartOf="@id/reminder_repeat_type_view"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -425,12 +431,12 @@
 
                 <TextView
                     android:id="@+id/reminder_repeat_type_set"
+                    style="@style/AppTheme.TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:textColor="@color/abc_secondary_text_material_dark"
-                    android:textSize="13dp"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@id/reminder_repeat_type"
                     app:layout_constraintEnd_toEndOf="@id/reminder_repeat_type_text"
                     app:layout_constraintStart_toStartOf="@id/reminder_repeat_type_text"
