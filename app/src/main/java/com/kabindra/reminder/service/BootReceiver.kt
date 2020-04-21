@@ -27,13 +27,6 @@ class BootReceiver : BroadcastReceiver() {
 
     private var mAlarmReceiver: AlarmReceiver? = null
 
-    // Constant values in milliseconds
-    private val milMinute = 60000L
-    private val milHour = 3600000L
-    private val milDay = 86400000L
-    private val milWeek = 604800000L
-    private val milMonth = 2592000000L
-
     private lateinit var databaseService: DatabaseService
 
     override fun onReceive(context: Context?, intent: Intent) {
@@ -69,32 +62,9 @@ class BootReceiver : BroadcastReceiver() {
                     // Cancel existing notification of the reminder by using its ID
                     // mAlarmReceiver.cancelAlarm(context, mReceivedID);
 
-                    // Check repeat type
-                    /*var mRepeatTime: Long = 0
-                    if (mRepeatType == "Minute") {
-                        mRepeatTime = mRepeatInterval!!.toInt() * milMinute
-                    } else if (mRepeatType == "Hour") {
-                        mRepeatTime = mRepeatInterval!!.toInt() * milHour
-                    } else if (mRepeatType == "Day") {
-                        mRepeatTime = mRepeatInterval!!.toInt() * milDay
-                    } else if (mRepeatType == "Week") {
-                        mRepeatTime = mRepeatInterval!!.toInt() * milWeek
-                    } else if (mRepeatType == "Month") {
-                        mRepeatTime = mRepeatInterval!!.toInt() * milMonth
-                    }*/
-
                     // Create a new notification
                     if (mActive!!) {
-                        /*if (mRepeat!!) {
-                            mAlarmReceiver!!.setRepeatAlarm(
-                                context,
-                                mCalendar,
-                                mReceivedID,
-                                mRepeatTime
-                            )
-                        } else {*/
                         mAlarmReceiver!!.setAlarm(context, mCalendar, mReceivedID)
-                        /*}*/
                     }
                 }
             }

@@ -57,16 +57,22 @@ class AlarmReceiver : BroadcastReceiver() {
 
             // Check repeat type
             var mRepeatTime: Long = 0
-            if (reminderRepeatType == "Minute") {
-                mRepeatTime = reminderRepeatTime.toString().toInt() * milMinute
-            } else if (reminderRepeatType == "Hour") {
-                mRepeatTime = reminderRepeatTime.toString().toInt() * milHour
-            } else if (reminderRepeatType == "Day") {
-                mRepeatTime = reminderRepeatTime.toString().toInt() * milDay
-            } else if (reminderRepeatType == "Week") {
-                mRepeatTime = reminderRepeatTime.toString().toInt() * milWeek
-            } else if (reminderRepeatType == "Month") {
-                mRepeatTime = reminderRepeatTime.toString().toInt() * milMonth
+            when (reminderRepeatType) {
+                "Minute" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milMinute
+                }
+                "Hour" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milHour
+                }
+                "Day" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milDay
+                }
+                "Week" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milWeek
+                }
+                "Month" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milMonth
+                }
             }
 
             val nextRepeatTime = mCalendar.timeInMillis + mRepeatTime
@@ -74,16 +80,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
             // Create a new notification
             if (reminder.reminderEnable!!) {
-                /*if (reminder.reminderRepeat!!) {
-                    AlarmReceiver().setRepeatAlarm(
-                        applicationContext,
-                        mCalendar,
-                        reminder.reminderId,
-                        mRepeatTime
-                    )
-                } else {*/
                 AlarmReceiver().setAlarm(context, mCalendar, mReceivedID)
-                /*}*/
             }
         }
 
@@ -181,8 +178,6 @@ class AlarmReceiver : BroadcastReceiver() {
         val diffTime = calendar.timeInMillis - currentTime
 
         // Start alarm using notification time
-        /*mAlarmManager!![AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() + diffTime] =
-            mPendingIntent*/
         mAlarmManager!!.setExact(
             AlarmManager.RTC_WAKEUP,
             c.timeInMillis + diffTime,
@@ -208,11 +203,6 @@ class AlarmReceiver : BroadcastReceiver() {
             )
         }
 
-        Log.e(
-            "AlarmReceiver: ",
-            calendar.timeInMillis.toString() + " " + currentTime + " " + (calendar.timeInMillis - currentTime)
-        )
-
         // Restart alarm if device is rebooted
         val receiver = ComponentName(context, BootReceiver::class.java)
         val pm = context.packageManager
@@ -222,47 +212,6 @@ class AlarmReceiver : BroadcastReceiver() {
             PackageManager.DONT_KILL_APP
         )
     }
-
-    /*fun setRepeatAlarm(
-        context: Context,
-        calendar: Calendar,
-        ID: Int,
-        mRepeatTime: Long
-    ) {
-        mAlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        // Put Reminder ID in Intent Extra
-        val intent = Intent(context, AlarmReceiver::class.java)
-        intent.putExtra(ReminderActivity.REMINDER_ID, ID)
-        mPendingIntent =
-            PendingIntent.getBroadcast(context, ID, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-
-        // Calculate notification timein
-        val c = Calendar.getInstance()
-        val currentTime = c.timeInMillis
-        val diffTime = calendar.timeInMillis - currentTime
-
-        // Start alarm using initial notification time and repeat interval time
-        mAlarmManager!!.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            c.timeInMillis + diffTime,
-            mRepeatTime, mPendingIntent
-        )
-
-        Log.e(
-            "AlarmReceiver: Repeat",
-            calendar.timeInMillis.toString() + " " + currentTime + " " + (calendar.timeInMillis - currentTime) + " " + mRepeatTime
-        )
-
-        // Restart alarm if device is rebooted
-        val receiver = ComponentName(context, BootReceiver::class.java)
-        val pm = context.packageManager
-        pm.setComponentEnabledSetting(
-            receiver,
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
-        )
-    }*/
 
     fun cancelAlarm(context: Context, ID: Int) {
         mAlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -281,4 +230,5 @@ class AlarmReceiver : BroadcastReceiver() {
             PackageManager.DONT_KILL_APP
         )
     }
+
 }

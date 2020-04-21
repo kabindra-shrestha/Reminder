@@ -26,8 +26,8 @@ class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Rem
 
         viewHolder.reminder_title?.text = item.reminderTitle
         var letter = "A"
-        if (item.reminderTitle != null && !item.reminderTitle.isEmpty()) {
-            letter = item.reminderTitle.substring(0, 1)
+        if (item.reminderTitle != null && item.reminderTitle!!.isNotEmpty()) {
+            letter = item.reminderTitle!!.substring(0, 1)
         }
 
         viewHolder.reminder_date_time?.text = item.reminderDate + " " + item.reminderTime
@@ -45,7 +45,7 @@ class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Rem
             viewHolder.reminder_active.setImageResource(R.drawable.reminder_active_off)
         }
 
-        viewHolder.reminder_repeat_switch.isChecked = item.reminderEnable
+        viewHolder.reminder_repeat_switch.isChecked = item.reminderEnable!!
 
         viewHolder.itemView.setOnClickListener { listener.onClick(it, position) }
 
@@ -68,7 +68,7 @@ class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Rem
                     item.reminderRepeatTime,
                     item.reminderRepeatType,
                     isSwitch
-                )
+                ), position
             )
         }
     }
@@ -87,14 +87,14 @@ class ReminderRecyclerViewAdapter(val context: Context?, var reminders: List<Rem
 
     interface OnItemClickListener {
         fun onClick(view: View, position: Int)
-        fun onSwitchClick(view: View, reminder: Reminder)
+        fun onSwitchClick(
+            view: View,
+            reminder: Reminder,
+            position: Int
+        )
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
-        this.listener = listener
-    }
-
-    fun setOnItemSwitchClickListener(listener: OnItemClickListener) {
         this.listener = listener
     }
 

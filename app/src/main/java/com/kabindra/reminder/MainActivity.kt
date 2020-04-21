@@ -90,29 +90,33 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val success = databaseService.getAllReminders()
+        val reminders = databaseService.getAllReminders()
 
-        if (success!!.isEmpty()) {
+        if (reminders!!.isEmpty()) {
             showList(main_list, false)
             showError(main_error, true)
         } else {
             showList(main_list, true)
             showError(main_error, false)
 
-            reminderRecyclerViewAdapter = ReminderRecyclerViewAdapter(this, success)
+            reminderRecyclerViewAdapter = ReminderRecyclerViewAdapter(this, reminders)
             main_list.adapter = reminderRecyclerViewAdapter
 
-            reminderRecyclerViewAdapter.setNotifyData(success)
+            reminderRecyclerViewAdapter.setNotifyData(reminders)
 
             reminderRecyclerViewAdapter.setOnItemClickListener(object :
                 ReminderRecyclerViewAdapter.OnItemClickListener {
                 override fun onClick(view: View, position: Int) {
-                    ReminderActivity.start(this@MainActivity, success[position].reminderId)
+                    ReminderActivity.start(this@MainActivity, reminders[position].reminderId)
                 }
 
-                override fun onSwitchClick(view: View, reminder: Reminder) {
+                override fun onSwitchClick(
+                    view: View,
+                    reminder: Reminder,
+                    position: Int
+                ) {
                     if (reminder.reminderRepeat!!) {
-                        updateReminder(reminder)
+                        updateReminder(reminder, position, reminders)
                     } else {
                         // Set up calender for creating the notification
                         val mCalendar = Calendar.getInstance()
@@ -139,30 +143,29 @@ class MainActivity : AppCompatActivity() {
                         )
                         mCalendar.set(Calendar.SECOND, 0)
 
-                        val isSwitch = view.reminder_repeat_switch.isChecked
-
-                        if (!isSwitch) {
-                            if (mCalendarNow.timeInMillis > mCalendar.timeInMillis) {
-                                view.reminder_repeat_switch.isChecked = false
-
-                                Utils.showSnackBar(
-                                    findViewById(android.R.id.content),
-                                    "The reminder time has been expired. You can update the reminder or delete if not needed."
+                        if (mCalendarNow.timeInMillis > mCalendar.timeInMillis) {
+                            if (/*view.reminder_repeat_switch.isChecked*/reminder.reminderEnable!!) {
+                                var reminderNew = Reminder(
+                                    reminder.reminderId,
+                                    reminder.reminderTitle,
+                                    reminder.reminderDate,
+                                    reminder.reminderTime,
+                                    reminder.reminderRepeat,
+                                    reminder.reminderRepeatTime,
+                                    reminder.reminderRepeatType,
+                                    false
                                 )
-                            } else {
-                                updateReminder(reminder)
+                                updateReminder(reminderNew, position, reminders)
                             }
+
+                            view.reminder_repeat_switch.isChecked = false
+
+                            Utils.showSnackBar(
+                                findViewById(android.R.id.content),
+                                "The reminder time has been expired. You can update the reminder or delete if not needed."
+                            )
                         } else {
-                            if (mCalendarNow.timeInMillis > mCalendar.timeInMillis) {
-                                view.reminder_repeat_switch.isChecked = false
-
-                                Utils.showSnackBar(
-                                    findViewById(android.R.id.content),
-                                    "The reminder time has been expired. You can update the reminder or delete if not needed."
-                                )
-                            } else {
-                                updateReminder(reminder)
-                            }
+                            updateReminder(reminder, position, reminders)
                         }
                     }
                 }
@@ -170,7 +173,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateReminder(reminder: Reminder) {
+    private fun updateReminder(
+        reminder: Reminder,
+        position: Int,
+        reminders: List<Reminder>
+    ) {
+        reminders[position].reminderId = reminder.reminderId
+        reminders[position].reminderTitle = reminder.reminderTitle
+        reminders[position].reminderDate = reminder.reminderDate
+        reminders[position].reminderTime = reminder.reminderTime
+        reminders[position].reminderRepeat = reminder.reminderRepeat
+        reminders[position].reminderRepeatTime = reminder.reminderRepeatTime
+        reminders[position].reminderRepeatType = reminder.reminderRepeatType
+        reminders[position].reminderEnable = reminder.reminderEnable
+
+        reminderRecyclerViewAdapter.setNotifyData(reminders)
+
         val success = databaseService.updateReminder(reminder)
 
         // Cancel existing notification of the reminder by using its ID
@@ -202,16 +220,7 @@ class MainActivity : AppCompatActivity() {
 
             // Create a new notification
             if (reminder.reminderEnable!!) {
-                /*if (reminder.reminderRepeat!!) {
-                    AlarmReceiver().setRepeatAlarm(
-                        applicationContext,
-                        mCalendar,
-                        reminder.reminderId,
-                        mRepeatTime
-                    )
-                } else {*/
                 AlarmReceiver().setAlarm(applicationContext, mCalendar, reminder.reminderId)
-                /*}*/
             }
         } else {
 
@@ -224,40 +233,9 @@ class MainActivity : AppCompatActivity() {
             mCalendar.set(Calendar.MINUTE, Utils.getMinute(reminder.reminderTime.toString()))
             mCalendar.set(Calendar.SECOND, 0)
 
-            println(
-                "DATETIME update switch: " + Utils.getMonth(reminder.reminderDate.toString()) + " - " + Utils.getYear(
-                    reminder.reminderDate.toString()
-                ) + " - " + Utils.getDate(reminder.reminderDate.toString()) + " - " + Utils.getHour(
-                    reminder.reminderTime.toString()
-                ) + " - " + Utils.getMinute(reminder.reminderTime.toString())
-            )
-
-            // Check repeat type
-            /*var mRepeatTime: Long = 0
-            if (reminder.reminderRepeatType == "Minute") {
-                mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * AlarmReceiver.milMinute
-            } else if (reminder.reminderRepeatType == "Hour") {
-                mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * AlarmReceiver.milHour
-            } else if (reminder.reminderRepeatType == "Day") {
-                mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * AlarmReceiver.milDay
-            } else if (reminder.reminderRepeatType == "Week") {
-                mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * AlarmReceiver.milWeek
-            } else if (reminder.reminderRepeatType == "Month") {
-                mRepeatTime = reminder.reminderRepeatTime.toString().toInt() * AlarmReceiver.milMonth
-            }*/
-
             // Create a new notification
             if (reminder.reminderEnable!!) {
-                /*if (reminder.reminderRepeat!!) {
-                    AlarmReceiver().setRepeatAlarm(
-                        applicationContext,
-                        mCalendar,
-                        reminder.reminderId,
-                        mRepeatTime
-                    )
-                } else {*/
                 AlarmReceiver().setAlarm(applicationContext, mCalendar, reminder.reminderId)
-                /*}*/
             }
 
             if (success == 1) {
