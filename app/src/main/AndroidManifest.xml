@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AboutUsActivity"></activity>
         <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.FullScreen">
@@ -24,7 +25,6 @@
         <activity android:name=".ReminderActivity" />
 
         <receiver android:name=".service.AlarmReceiver" />
-
         <receiver android:name=".service.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

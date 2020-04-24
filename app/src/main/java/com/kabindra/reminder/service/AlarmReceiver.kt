@@ -51,39 +51,6 @@ class AlarmReceiver : BroadcastReceiver() {
         val reminderRepeatTime: String? = reminder?.reminderRepeatTime
         val reminderRepeatType: String? = reminder?.reminderRepeatType
 
-        if (reminderRepeat!!) {
-            val mCalendar = Calendar.getInstance()
-            mCalendar.set(Calendar.SECOND, 0)
-
-            // Check repeat type
-            var mRepeatTime: Long = 0
-            when (reminderRepeatType) {
-                "Minute" -> {
-                    mRepeatTime = reminderRepeatTime.toString().toInt() * milMinute
-                }
-                "Hour" -> {
-                    mRepeatTime = reminderRepeatTime.toString().toInt() * milHour
-                }
-                "Day" -> {
-                    mRepeatTime = reminderRepeatTime.toString().toInt() * milDay
-                }
-                "Week" -> {
-                    mRepeatTime = reminderRepeatTime.toString().toInt() * milWeek
-                }
-                "Month" -> {
-                    mRepeatTime = reminderRepeatTime.toString().toInt() * milMonth
-                }
-            }
-
-            val nextRepeatTime = mCalendar.timeInMillis + mRepeatTime
-            mCalendar.timeInMillis = nextRepeatTime
-
-            // Create a new notification
-            if (reminder.reminderEnable!!) {
-                AlarmReceiver().setAlarm(context, mCalendar, mReceivedID)
-            }
-        }
-
         // Create intent to open ReminderActivity on notification click
         val editIntent = Intent(context, MainActivity::class.java)
         /*editIntent.putExtra(
@@ -142,6 +109,49 @@ class AlarmReceiver : BroadcastReceiver() {
             notification.build()
         )
         // it is better to not use 0 as notification id, so used 1.
+
+        if (reminderRepeat!!) {
+            val mCalendar = Calendar.getInstance()
+            mCalendar.set(Calendar.SECOND, 0)
+
+            // Check repeat type
+            var mRepeatTime: Long = 0
+            when (reminderRepeatType) {
+                "Minute" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milMinute
+                }
+                "Hour" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milHour
+                }
+                "Day" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milDay
+                }
+                "Week" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milWeek
+                }
+                "Month" -> {
+                    mRepeatTime = reminderRepeatTime.toString().toInt() * milMonth
+                }
+            }
+
+            val nextRepeatTime = mCalendar.timeInMillis + mRepeatTime
+            mCalendar.timeInMillis = nextRepeatTime
+
+            // Create a new notification
+            if (reminder.reminderEnable!!) {
+                AlarmReceiver().setAlarm(context, mCalendar, mReceivedID)
+            }
+        } else {
+            reminder.reminderEnable = false
+            databaseService.updateReminder(reminder)
+            /*val success = databaseService.updateReminder(reminder)
+            if (success == 1) {
+                Utils.showSnackBar(
+                    findViewById(android.R.id.content),
+                    "Reminder updated successfully."
+                )
+            }*/
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

@@ -17,4 +17,6 @@
     <string name="channel_id">Reminder00</string>
     <string name="channel_name">Reminder Notification</string>
     <string name="channel_description">This is a reminder notification.</string>
+
+    <string name="about">"Reminder is a very simple to-do list app. You can set reminders and then the app reminds you when it’s time. The app has a robust, but short list of features. You can even set minutes wise, hourly, daily, weekly, and monthly reminders for things like drinking water. The app isn’t as complex as the big names in this space. However, it’s one of the best simple reminder apps for personal use."</string>
 </resources>

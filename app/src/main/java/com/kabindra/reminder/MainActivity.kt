@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_about_reminder -> {
-                onBackPressed()
+                AboutUsActivity.start(this@MainActivity, null)
                 true
             }
             else -> super.onOptionsItemSelected(item)
